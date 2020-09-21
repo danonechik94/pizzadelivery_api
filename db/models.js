@@ -1,10 +1,10 @@
-const { DataTypes, Model } = require('sequelize');
+const { DataTypes, Model, Sequelize } = require('sequelize');
 class Price extends Model {}
 class Item extends Model {}
 
 module.exports.init = (sequelize) => {
     Price.init({
-        base: DataTypes.DOUBLE
+        base: DataTypes.DOUBLE,
     }, { sequelize, modelName: 'price' });
 
     Item.init({
@@ -16,8 +16,32 @@ module.exports.init = (sequelize) => {
         }
     }, { sequelize, modelName: 'item' });
 
-    Item.hasMany(Item);
-    Item.Price = Price.belongsTo(Item);
+
+    Item.belongsTo(Price, {
+        foreignKey: 'priceId', 
+        as: 'price'
+    });
+    Item.belongsToMany(Item, { 
+        through: 'item_combos',
+        as: 'items' 
+    });
+    // Item.belongsTo(Item, {
+    //     foreignKey: 'itemId',
+    //     onDelete: 'cascade'
+    // });
+    // Item.hasMany(Item, { 
+    //     foreignKey: 'itemId', 
+    //     as: 'items', 
+    //     onDelete: 'cascade'
+    // });
+    // Item.hasOne(Price, { 
+    //     foreignKey: 'priceId', 
+    //     onDelete: 'cascade' 
+    // });
+    // Price.belongsTo(Item);
+
 };
+
+
 module.exports.Item = Item;
 module.exports.Price = Price;
