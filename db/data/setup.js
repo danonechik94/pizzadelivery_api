@@ -93,11 +93,11 @@ async function reset() {
         description: 'Our best meat pizza and two drinks for two people to enjoy.',
         type: 'combo',
         price: { base: 10 },
-        // items: [
-        //     meatPizza,
-        //     colaDrink,
-        //     spriteDrink,
-        // ],
+        items: [
+            meatPizza,
+            colaDrink,
+            spriteDrink,
+        ],
     }, {
         include: [ 
             {
@@ -106,14 +106,14 @@ async function reset() {
             },
             { 
                 model: Item,
-                as: 'items'
+                as: 'comboItem'
             } 
         ]
     });
 
-    comboItem.addItem(meatPizza);
-    comboItem.addItem(colaDrink);
-    comboItem.addItem(spriteDrink);
+    comboItem.addComboItem(meatPizza);
+    comboItem.addComboItem(colaDrink);
+    comboItem.addComboItem(spriteDrink);
     console.log('123');
 }
 

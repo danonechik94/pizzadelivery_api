@@ -1,6 +1,8 @@
 const { DataTypes, Model, Sequelize } = require('sequelize');
 class Price extends Model {}
 class Item extends Model {}
+class Order extends Model {}
+class ItemOrder extends Model {}
 
 module.exports.init = (sequelize) => {
     Price.init({
@@ -16,30 +18,35 @@ module.exports.init = (sequelize) => {
         }
     }, { sequelize, modelName: 'item' });
 
-
     Item.belongsTo(Price, {
         foreignKey: 'priceId', 
         as: 'price'
     });
-    Item.belongsToMany(Item, { 
-        through: 'item_combos',
-        as: 'items' 
-    });
-    // Item.belongsTo(Item, {
-    //     foreignKey: 'itemId',
-    //     onDelete: 'cascade'
-    // });
-    // Item.hasMany(Item, { 
-    //     foreignKey: 'itemId', 
-    //     as: 'items', 
-    //     onDelete: 'cascade'
-    // });
-    // Item.hasOne(Price, { 
-    //     foreignKey: 'priceId', 
-    //     onDelete: 'cascade' 
-    // });
-    // Price.belongsTo(Item);
 
+    const Combos = sequelize.define('combo_item', {});
+
+    Item.belongsToMany(Item, { 
+        through: Combos,
+        as: 'comboItem' 
+    });
+
+
+
+    ItemOrder.init({
+        quantity: { type: DataTypes.NUMBER, allowNull: false }
+    }, { sequelize, modelName: 'itemOrder' });
+
+    Order.init({
+        orderNumber: { type: DataTypes.STRING, allowNull: false },
+        total: { type: DataTypes.DOUBLE, allowNull: false },
+    }, { sequelize, modelName: 'order' });
+
+    ItemOrder.hasMany(Item, { as: 'items' });
+
+    Order.belongsToMany(ItemOrder, { 
+        through: 'orderItem',
+        as: 'orederItems' 
+    });
 };
 
 
